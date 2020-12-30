@@ -58,9 +58,35 @@ app.delete('/api/persons/:id', (request, response) => {
   response.status(204).end()
 })
 
+const generateId = () => {
+  return Math.floor(Math.random() * Math.floor(100000));
+}
+
 app.post('/api/persons', (request, response) => {  
-  const person = request.body
-  person.id = Math.floor(Math.random() * Math.floor(100000));
+  const body = request.body  
+
+  const samePerson = persons.find(p => p.name === body.name)
+  console.log("samePerson = ", samePerson)
+
+  if (!body.name) {
+    return response.status(400).json({ 
+      error: 'name is missing'
+    })
+  } else if (!body.number) {
+    return response.status(400).json({ 
+      error: 'number is missing'
+    })
+  } else if (typeof samePerson !== 'undefined'){
+    return response.status(400).json({ 
+      error: `name must be unique, ${body.name} already exists`
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId(),
+  }
 
   persons = persons.concat(person)
 
