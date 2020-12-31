@@ -1,7 +1,10 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan');
 
 app.use(express.json())
+
+app.use(morgan('tiny'));
 
 let persons = [
     {
@@ -66,7 +69,6 @@ app.post('/api/persons', (request, response) => {
   const body = request.body  
 
   const samePerson = persons.find(p => p.name === body.name)
-  console.log("samePerson = ", samePerson)
 
   if (!body.name) {
     return response.status(400).json({ 
